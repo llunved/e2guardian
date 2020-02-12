@@ -4376,9 +4376,10 @@ int ConnectionHandler::handleICAPresmod(Socket &peerconn, String &ip, NaughtyFil
                             responsescanners.push_back((CSPlugin *)(*i));
                         else if (csrc < 0)
                             syslog(LOG_ERR, "%swillScanRequest returned error: %d", thread_id.c_str(), csrc);
+                        else 
+                	    check_content(checkme, docbody,peerconn, peerconn,responsescanners);
                     }
                 }
-                check_content(checkme, docbody,peerconn, peerconn,responsescanners);
     }
 
     //send response header to client
