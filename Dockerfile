@@ -40,7 +40,12 @@ RUN \
 # RUNTIME
 FROM registry.fedoraproject.org/fedora-minimal:latest
 
-COPY  --from=build /usr/local /usr/local
+VOLUME /etc/e2guardian /var/log/e2guardian
+
+COPY --from=build /usr/local /usr/local
+COPY --from=build /etc/e2guardian /etc/e2guardian.default
+COPY --from=build /var/log/e2guardian /var/log/e2guardian
+COPY contrib/docker-entrypoint.sh /usr/local/sbin/entrypoint.sh
 
 RUN microdnf -y install openssl adns pcre && microdnf -y clean all
 
@@ -53,14 +58,14 @@ RUN \
     \
     echo '######## Create e2guardian account ########' && \
     groupmod -g 1000 users && \
-    useradd -u 1000 -U -d /etc/e2guardian/config -s /bin/false e2guardian && \
+    useradd -u 1000 -U -d /etc/e2guardian -s /bin/false e2guardian && \
     usermod -G users e2guardian && \
-    \
+    chmod +x /usr/local/sbin/entrypoint.sh && \
     echo '######## Clean-up ########' && \
     rm -rf /tmp/* /var/cache/dnf/*
 
 EXPOSE 8080
 
-ENTRYPOINT ["/sbin/tini","-vv","-g","--","/app/sbin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/sbin/entrypoint.sh"]
 
 
