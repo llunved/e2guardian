@@ -1,0 +1,14 @@
+adns-devel
+autoconf
+autogen
+automake
+binutils
+gcc-c++
+git
+libtool
+make
+openssl-devel
+patch
+pcre-devel
+zlib-devel
+
