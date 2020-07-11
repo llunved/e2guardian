@@ -39,6 +39,8 @@ RUN mkdir /sysimg \
 RUN adduser -u 1010 -d /var/lib/e2guardian -r -U -G users,root,dialout -s /sbin/nologin -c "app user" $USER
 RUN adduser -R /sysimg -d /var/lib/e2guardian -u 1010 -r -U -G users,root -s /sbin/nologin -c "app user" $USER
 
+RUN mkdir -p /etc/e2guardian /var/lib/e2guardian /var/log/e2guardian
+
 # BUILD
 COPY . /src/
 
@@ -87,7 +89,6 @@ LABEL MAINTAINER riek@llunved.net
 
 ENV LANG=en_US.UTF-8
 ENV USER=$USER
-USER root
 
 COPY --from=build /sysimg /
 
