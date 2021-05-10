@@ -10,5 +10,6 @@ make
 openssl-devel
 patch
 pcre-devel
+rsync
 zlib-devel
 

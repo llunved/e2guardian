@@ -23,6 +23,14 @@ for CUR_DIR in /host/${LOGDIR}/${NAME} /host/${DATADIR}/${NAME} /host/${CONFDIR}
     fi
 done    
 
-chroot /host /usr/bin/podman create --name ${NAME} --net=host --entrypoint /sbin/entrypoint.sh -v ${DATADIR}/${NAME}:/var/lib/e2guardian:z,rw -v ${CONFDIR}/${NAME}:/etc/e2guardian:z,rw -v ${LOGDIR}/${NAME}:/var/log/e2guardian:z,rw ${IMAGE} /bin/start.sh
+if [  ${IMAGE%%\/*} == "localhost" ]; then 
+    PULLALLWAYS=""
+else
+    PULLALWAYS="--pull=always"
+fi
+
+echo chroot /host /usr/bin/podman create --name ${NAME} --net=host --label "io.containers.autoupdate=image" ${PULLALWAYS} --entrypoint /sbin/entrypoint.sh -v ${DATADIR}/${NAME}:/var/lib/e2guardian:z,rw -v ${CONFDIR}/${NAME}:/etc/e2guardian:z,rw -v ${LOGDIR}/${NAME}:/var/log/e2guardian:z,rw ${IMAGE} /bin/start.sh
+chroot /host /usr/bin/podman create --name ${NAME} --net=host --label "io.containers.autoupdate=image" ${PULLALWAYS} --entrypoint /sbin/entrypoint.sh -v ${DATADIR}/${NAME}:/var/lib/e2guardian:z,rw -v ${CONFDIR}/${NAME}:/etc/e2guardian:z,rw -v ${LOGDIR}/${NAME}:/var/log/e2guardian:z,rw ${IMAGE} /bin/start.sh
+
 chroot /host sh -c "/usr/bin/podman generate systemd --restart-policy=always -t 1 ${NAME} > /etc/systemd/system/${NAME}.service && systemctl daemon-reload && systemctl enable ${NAME}"
 

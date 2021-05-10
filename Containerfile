@@ -1,4 +1,4 @@
-ARG OS_RELEASE=32
+ARG OS_RELEASE=34
 ARG OS_IMAGE=fedora:$OS_RELEASE
 
 FROM $OS_IMAGE as build
@@ -55,11 +55,11 @@ RUN \
     sed -i "s|^.\{0,1\}dockermode = off$|dockermode = on|g" /etc/e2guardian/e2guardian.conf
 
 # Copy to minimal target environment
-RUN cp -pR /usr/local /sysimg/usr/local \
-    && cp -pR /etc/e2guardian /sysimg/etc/e2guardian.default \
-    && cp -pR /var/log/e2guardian /sysimg/var/log/e2guardian \
-    && cp -pR /var/lib/e2guardian /sysimg/var/lib/e2guardian \
-    && mkdir /sysimg/etc/e2guardian
+RUN rsync -av /usr/local/ /sysimg/usr/local/ \
+    && rsync -av /etc/e2guardian/ /sysimg/etc/e2guardian.default/ \
+    && rsync -av /var/log/e2guardian/ /sysimg/var/log/e2guardian/ \
+    && rsync -av /var/lib/e2guardian/ /sysimg/var/lib/e2guardian/ \
+    && mkdir -v /sysimg/etc/e2guardian
 
 RUN \
     echo '######## Modify openssl.cnf ########' && \

@@ -12,5 +12,5 @@ fi
 
 rm -rf /var/run/e2guardian.pid
 
-exec /usr/local/bin/e2guardian -N -c /etc/e2guardian/e2guardian.conf
+exec /usr/local/sbin/e2guardian -N -c /etc/e2guardian/e2guardian.conf
 
